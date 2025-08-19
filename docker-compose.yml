@@ -32,7 +32,7 @@ services:
     volumes:
       - loki_data:/tmp/loki
 
-  promtail:  # <<< Corrección aquí (alineado con otros servicios)
+  promtail:
     image: grafana/promtail:latest
     volumes:
       - ./promtail-config.yml:/etc/promtail/config.yml
