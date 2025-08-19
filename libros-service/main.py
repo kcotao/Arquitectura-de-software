@@ -71,7 +71,6 @@ def crear_libro(libro: Libro):
     try:
         logger.info(f"Intentando crear libro: {libro.titulo} (ID: {libro.id})")
         
-        # Validación básica de ID único
         if any(l.id == libro.id for l in libros):
             error_msg = f"ID de libro duplicado: {libro.id}"
             logger.error(error_msg)
