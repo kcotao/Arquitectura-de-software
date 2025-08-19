@@ -14,4 +14,5 @@ puedes crear nuevos autores con su respectiva ID.
 Utiliza una comunicación mediante logs de Promtail, Loki y visualización mediante Grafana.
 
 Para ejecutar:
-docker compose up -d --build
+
+`docker compose up -d --build`
