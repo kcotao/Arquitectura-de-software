@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libros</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Libritos 📖</h1>
+        
+        <form id="form-libro">
+            <input type="text" id="titulo" placeholder="Título" required />
+            <input type="number" id="autor_id" placeholder="ID Autor" required />
+            <input type="number" id="año" placeholder="Año (opcional)" />
+            <button type="submit">Agregar</button>
+        </form>
+
+        <h2>Lista de libros</h2>
+        <ul id="lista"></ul>
+    </div>
+
+    <script>
+        const form = document.getElementById("form-libro");
+const lista = document.getElementById("lista");
+
+async function getNextId() {
+    const response = await fetch("/libros");
+    const libros = await response.json();
+    return libros.length > 0 ? Math.max(...libros.map(l => l.id)) + 1 : 1;
+}
+
+async function cargarLibros() {
+    const res = await fetch("/libros");
+    const data = await res.json();
+    lista.innerHTML = "";
+    data.forEach(libro => {
+        const li = document.createElement("li");
+        li.textContent = `${libro.titulo} - ${libro.autor_nombre}${libro.año ? ` (${libro.año})` : ''}`;
+        lista.appendChild(li);
+    });
+}
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+        const nuevoId = await getNextId();
+        const body = {
+            id: nuevoId,
+            titulo: document.getElementById("titulo").value,
+            autor_id: parseInt(document.getElementById("autor_id").value),
+            año: document.getElementById("año").value ? parseInt(document.getElementById("año").value) : null
+        };
+        
+        const response = await fetch("/libros", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(body)
+        });
+        
+        if (!response.ok) throw new Error("Error al agregar libro");
+        form.reset();
+        await cargarLibros();
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Error al agregar libro: " + error.message);
+    }
+});
+
+cargarLibros();
+    </script>
+</body>
+</html>

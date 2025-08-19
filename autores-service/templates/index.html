@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autores</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Autores ✍️</h1>
+        
+        <form id="form-autor">
+            <input type="number" id="id" placeholder="ID" required />
+            <input type="text" id="nombre" placeholder="Nombre" required />
+            <button type="submit">Agregar</button>
+        </form>
+
+        <h2>Lista de autores</h2>
+        <ul id="lista"></ul>
+    </div>
+
+    <script>
+        const form = document.getElementById("form-autor");
+        const lista = document.getElementById("lista");
+
+        async function cargarAutores() {
+            const res = await fetch("/autores");
+            const data = await res.json();
+            lista.innerHTML = "";
+            data.forEach(autor => {
+                const li = document.createElement("li");
+                li.textContent = `#${autor.id} - ${autor.nombre}`;
+                lista.appendChild(li);
+            });
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const body = {
+                id: parseInt(document.getElementById("id").value),
+                nombre: document.getElementById("nombre").value
+            };
+            
+            await fetch("/autores", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(body)
+            });
+            
+            form.reset();
+            await cargarAutores();
+        });
+
+        cargarAutores();
+    </script>
+</body>
+</html>
